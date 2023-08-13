@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react'
 import Toast from './Toast'
 import useToastInterceptor, { ToastInterceptData } from './useToastInterceptor'
 
+import './style.css'
+
 interface Props {
   delay?: number
 }
@@ -40,7 +42,7 @@ const ToastContainer = ({ delay = 6000 }: Props) => {
 
   return (
     <div
-      className="fixed bottom-0 left-1/2 z-[99999] max-h-[calc(98px*3)] w-full max-w-[550px] -translate-x-1/2 overflow-hidden"
+      className="hidden-scrollbar fixed bottom-0 left-1/2 z-[99999] max-h-[calc(98px*3)] w-full max-w-[590px] -translate-x-1/2 overflow-scroll px-5"
       data-testid="toast-container"
     >
       <div className="flex flex-col items-end justify-center">
