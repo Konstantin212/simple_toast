@@ -1,71 +1,119 @@
-import Avatar from 'components/Avatar'
+import React, { useState } from 'react'
+import useToast, { ToastEvents, ToastEventType } from './Toast/useToast'
+import ToastContainer from './Toast/ToastContainer'
 
-const randoms = [
-  [1, 2],
-  [3, 4, 5],
-  [6, 7]
-]
+const defaultMessageShort = 'Short message'
+const defaultMessageLong =
+  'Long message Control the padding on one side of an element using the p{t|r|b|l}-{size} utilities.For example, pt-6 would add 1.5rem of padding to the top of an element, pr-4 would add 1rem of padding to the right of an element, pb-8 would add 2rem of padding to the bottom of an element, and pl-2 would add 0.5rem of padding to the left of an element.'
 
 function App() {
+  const toast = useToast()
+
+  const [variant, setVariant] = useState<ToastEventType>(
+    ToastEvents.successToast
+  )
+  const [title, setTitle] = useState('')
+  const [delay, setDelay] = useState(6000)
+  const showToast = () => {
+    toast[variant]({ title, message: defaultMessageShort })
+  }
+  const showToastLongText = () => {
+    toast[variant]({ title, message: defaultMessageLong })
+  }
+
+  const handleVariant = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { target } = e
+
+    if (target) setVariant(target.value as ToastEventType)
+  }
+  const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { target } = e
+
+    if (target) setTitle(target.value)
+  }
+  const handleDelay = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { target } = e
+
+    if (target) setDelay(Number(target.value))
+  }
+
   return (
     <div className="relative overflow-hidden bg-white">
-      <div className="h-screen sm:pb-40 sm:pt-24 lg:pb-48 lg:pt-40">
-        <div className="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
-          <div className="sm:max-w-lg">
-            <div className="my-4">
-              <Avatar
-                size="large"
-                src="https://www.gravatar.com/avatar/4405735f6f3129e0286d9d43e7b460d0"
-              />
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-              Welcome!
-            </h1>
-            <p className="mt-4 text-xl text-gray-500">
-              This is a boilerplate build with Vite, React 18, TypeScript,
-              Vitest, Testing Library, TailwindCSS 3, Eslint and Prettier.
-            </p>
-          </div>
-          <div>
-            <div className="my-10">
-              <a
-                href="vscode://"
-                className="inline-block rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-center font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-offset-2"
-              >
-                Start building for free
-              </a>
-              <div
-                aria-hidden="true"
-                className="pointer-events-none mt-10 md:mt-0 lg:absolute lg:inset-y-0 lg:mx-auto lg:w-full lg:max-w-7xl"
-              >
-                <div className="absolute sm:left-1/2 sm:top-0 sm:translate-x-8 lg:left-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-8">
-                  <div className="flex items-center space-x-6 lg:space-x-8">
-                    {randoms.map((random, number) => (
-                      <div
-                        key={`random-${random[number]}`}
-                        className="grid shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8"
-                      >
-                        {random.map((number) => (
-                          <div
-                            key={`random-${number}`}
-                            className="h-64 w-44 overflow-hidden rounded-lg sm:opacity-0 lg:opacity-100"
-                          >
-                            <img
-                              src={`https://picsum.photos/600?random=${number}`}
-                              alt=""
-                              className="h-full w-full bg-indigo-100 object-cover object-center"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+      <h1 className="text-center text-lg font-bold">Toast demo playground</h1>
+      <div className="m-5 mx-auto w-1/2 rounded bg-amber-400 p-5 shadow">
+        <div>Variant:</div>
+        <div className="flex items-center p-5">
+          <label htmlFor="success">Success</label>
+          <input
+            type="radio"
+            id="success"
+            name="variant"
+            checked={variant === ToastEvents.successToast}
+            value={ToastEvents.successToast}
+            className="ml-2 mr-5"
+            onChange={handleVariant}
+          />
+          <label htmlFor="warning">Warning</label>
+          <input
+            type="radio"
+            id="warning"
+            name="variant"
+            checked={variant === ToastEvents.warningToast}
+            value={ToastEvents.warningToast}
+            className="ml-2 mr-5"
+            onChange={handleVariant}
+          />
+          <label htmlFor="danger">Danger</label>
+          <input
+            type="radio"
+            id="danger"
+            name="variant"
+            checked={variant === ToastEvents.dangerToast}
+            value={ToastEvents.dangerToast}
+            className="ml-2 mr-5"
+            onChange={handleVariant}
+          />
         </div>
+        <div className="flex items-center p-5">
+          <label htmlFor="title" className="w-1/4">
+            Title:
+          </label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            className="ml-2 mr-5 w-full"
+            onChange={handleTitle}
+          />
+        </div>
+        <div className="flex items-center p-5">
+          <label htmlFor="title" className="w-1/4">
+            Delay:
+          </label>
+          <input
+            data-testid="delay-input"
+            type="number"
+            id="delay"
+            name="delay"
+            className="ml-2 mr-5 w-full"
+            value={delay}
+            onChange={handleDelay}
+          />
+        </div>
+        <button
+          onClick={showToast}
+          className="cursor-pointer rounded bg-green-500 px-3 py-2 text-white shadow hover:bg-green-400"
+        >
+          Show toast
+        </button>
+        <button
+          onClick={showToastLongText}
+          className="ml-10 cursor-pointer rounded bg-green-500 px-3 py-2 text-white shadow hover:bg-green-400"
+        >
+          Show toast with long text
+        </button>
       </div>
+      <ToastContainer delay={delay} />
     </div>
   )
 }
